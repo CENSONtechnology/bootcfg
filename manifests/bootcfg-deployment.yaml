@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: bootcfg
+  namespace: kubermesh
+spec:
+  template:
+    metadata:
+      labels:
+        app: bootcfg
+    spec:
+      containers:
+      - name: bootcfg
+        image: kubermesh/bootcfg
+        ports:
+        - containerPort: 8085
