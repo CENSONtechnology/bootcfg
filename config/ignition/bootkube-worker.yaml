@@ -22,8 +22,7 @@ systemd:
         WantedBy=multi-user.target
     - name: kubelet.service
       enable: true
-      command: start
-      content: |
+      contents: |
         [Service]
         EnvironmentFile=-/etc/environment
         EnvironmentFile=/run/flannel/subnet.env
