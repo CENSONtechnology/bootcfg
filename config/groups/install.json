@@ -3,8 +3,8 @@
   "name": "CoreOS Install",
   "profile": "install-reboot",
   "metadata": {
-    "coreos_channel": "alpha",
-    "coreos_version": "1109.1.0",
+    "coreos_channel": "stable",
+    "coreos_version": "1010.6.0",
     "ignition_endpoint": "http://bootcfg.kubermesh:8085/ignition",
     "baseurl": "http://bootcfg.kubermesh:8085/assets/coreos"
   }
