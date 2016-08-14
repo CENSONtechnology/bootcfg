@@ -6,13 +6,6 @@
     "os": "installed"
   },
   "metadata": {
-    "k8s_dns_service_ip": "10.3.0.10",
-    "k8s_master_endpoint": "https://172.15.0.21:443",
-    "k8s_pod_network": "10.2.0.0/16",
-    "k8s_service_ip_range": "10.3.0.0/24",
-    "networkd_address": "172.15.0.22/16",
-    "networkd_dns": "172.15.0.3",
-    "networkd_gateway": "172.15.0.1",
     "ssh_authorized_keys": [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC66kCdo044bDM3ky+lurUJWIW/Hf1zRVngzYx8CdN2g1zyiSP9YrXLPyKdb8mewDktp/twod0dB06bwhXPtwY6iz5EAFEeUVJN/UqUqsmA0r73ewv0RS0lemL00mVSVXG3MjSxeafV7gOO3dFuq8w9M9vUyzj0MukldYMpnaBe5p1i2XXaQ6TkHMrLx11ZsbGMrcq0PXDAB+ohIM5oaLj2mlMQu8A5s5Vc5Ejd/mKZs41Z3Dt84AU51Fb0e1mH/9lPho1Z0oPPzSjJh/TSoKoJHWR3yvokvnqULs4mqPT895wXq1uBFSplkL+vK0qiW8IYQTZl1DIefyUWKqvlFNRJ"
     ]
