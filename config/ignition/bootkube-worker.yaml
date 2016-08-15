@@ -85,6 +85,7 @@ storage:
 passwd:
   users:
     - name: core
+      password_hash: "iGyYPV5k4DAzA"
       ssh_authorized_keys:
         {{ range $element := .ssh_authorized_keys }}
         - {{$element}}
