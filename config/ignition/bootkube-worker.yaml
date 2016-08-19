@@ -4,6 +4,10 @@ systemd:
     - name: flanneld.service
       enable: true
       dropins:
+        - name: persistent-options-file.conf
+          contents: |
+            [Service]
+            Environment="FLANNEL_ENV_FILE=/etc/flannel/options.env"
         - name: 50-ip-masq.conf
           contents: |
             [Service]
@@ -95,7 +99,7 @@ storage:
       contents:
         inline: |
           empty
-    - path: /run/flannel/options.env
+    - path: /etc/flannel/options.env
       filesystem: rootfs
       mode: 0644
       contents:
