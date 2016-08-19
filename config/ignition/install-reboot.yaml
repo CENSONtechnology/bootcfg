@@ -24,6 +24,9 @@ storage:
           FIRST_DISK=`lsblk --output NAME -I 8 -I 254 --nodeps --noheadings | sort | head -n 1`
           coreos-install -d /dev/${FIRST_DISK} -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json {{if index . "baseurl"}}-b {{.baseurl}}{{end}}
           udevadm settle
+          mount /dev/${FIRST_DISK}9 /mnt/
+          mkdir -p /mnt/etc/kubernetes/
+          curl "{{.kubeconfig}}" -o /mnt/etc/kubernetes/kubeconfig
           systemctl reboot
 
 {{ if index . "ssh_authorized_keys" }}

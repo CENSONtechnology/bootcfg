@@ -14,3 +14,10 @@ spec:
         image: kubermesh/bootcfg
         ports:
         - containerPort: 8085
+        volumeMounts:
+        - mountPath: /var/lib/bootcfg/assets/kubernetes
+          name: kubernetes-config
+      volumes:
+      - name: kubernetes-config
+        hostPath:
+          path: /etc/kubernetes
