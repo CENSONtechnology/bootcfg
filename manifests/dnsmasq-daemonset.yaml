@@ -30,5 +30,6 @@ spec:
           - --log-queries
           - --log-dhcp
           - --interface=eth1
+          - --bind-dynamic
           - --dhcp-range=172.18.0.2,172.18.0.6
           - --address=/bootcfg.kubermesh/172.18.0.1
