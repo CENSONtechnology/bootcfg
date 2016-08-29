@@ -1,44 +1,13 @@
 ---
 systemd:
   units:
-    - name: flanneld.service
-      enable: true
-      dropins:
-        - name: persistent-options-file.conf
-          contents: |
-            [Service]
-            Environment="FLANNEL_ENV_FILE=/etc/flannel/options.env"
-        - name: 50-ip-masq.conf
-          contents: |
-            [Service]
-            ExecStart=
-            ExecStart=/usr/libexec/sdnotify-proxy /run/flannel/sd.sock \
-              /usr/bin/docker run --net=host --privileged=true --rm \
-              --volume=/run/flannel:/run/flannel \
-              --env=NOTIFY_SOCKET=/run/flannel/sd.sock \
-              --env=AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-              --env=AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-              --env-file=${FLANNEL_ENV_FILE} \
-              --volume=/usr/share/ca-certificates:/etc/ssl/certs:ro \
-              --volume=${ETCD_SSL_DIR}:${ETCD_SSL_DIR}:ro \
-              ${FLANNEL_IMG}:${FLANNEL_VER} /opt/bin/flanneld
-
-              ExecStartPost=
-              ExecStartPost=/usr/bin/docker run --net=host --rm --volume=/run:/run \
-                ${FLANNEL_IMG}:${FLANNEL_VER} \
-                /opt/bin/mk-docker-opts.sh -d /run/flannel_docker_opts.env -i -m
-
     - name: docker.service
       enable: true
       dropins:
-        - name: 40-flannel.conf
+        - name: 40-no-net.conf
           contents: |
             [Service]
-            Environment=DOCKER_OPT_IPMASQ="--ip-masq=false"
-
-            [Unit]
-            Requires=flanneld.service
-            After=flanneld.service
+            Environment="DOCKER_OPTS=--bridge=none --iptables=false --ip-masq=false"
     - name: kubelet.path
       enable: true
       contents: |
@@ -53,7 +22,6 @@ systemd:
       contents: |
         [Service]
         EnvironmentFile=-/etc/environment
-        EnvironmentFile=/run/flannel/subnet.env
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
         Environment=KUBELET_VERSION=v1.3.0_coreos.1
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
@@ -66,11 +34,13 @@ systemd:
           --exit-on-lock-contention \
           --config=/etc/kubernetes/manifests \
           --allow-privileged \
-          --hostname-override=$${FLANNEL_SUBNET%/*} \
+          --hostname-override=%m \
           --node-labels=master=true \
           --minimum-container-ttl-duration=3m0s \
           --cluster_dns=10.3.0.10 \
           --cluster_domain=cluster.local \
+          --network-plugin=cni \
+          --network-plugin-dir=/etc/kubernetes/cni/net.d \
           '
         Restart=always
         RestartSec=5
@@ -79,28 +49,11 @@ systemd:
         WantedBy=multi-user.target
 
 storage:
-  {{ if index . "pxe" }}
-  disks:
-    - device: /dev/sda
-      wipe_table: true
-      partitions:
-        - label: ROOT
-  filesystems:
-    - name: rootfs
-      mount:
-        device: "/dev/sda1"
-        format: "ext4"
-        create:
-          force: true
-          options:
-            - "-LROOT"
-  {{else}}
   filesystems:
     - name: rootfs
       mount:
         device: "/dev/disk/by-label/ROOT"
         format: "ext4"
-  {{end}}
   files:
     - path: /etc/kubernetes/empty
       filesystem: rootfs
@@ -108,12 +61,19 @@ storage:
       contents:
         inline: |
           empty
-    - path: /etc/flannel/options.env
+    - path: /etc/kubernetes/cni/net.d/10-flannel.conf
       filesystem: rootfs
       mode: 0644
       contents:
         inline: |
-          FLANNELD_ETCD_ENDPOINTS=http://[fd65:7b9c:569:680:98eb:c508:ea6b:b0b2]:2379
+          {
+            "name": "podnet",
+            "type": "flannel",
+            "subnetFile": "/etc/kubernetes/flannel/subnet.env",
+            "delegate": {
+              "ipMasq": false
+            }
+          }
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
