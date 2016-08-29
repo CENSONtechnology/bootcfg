@@ -8,6 +8,18 @@ systemd:
           contents: |
             [Service]
             Environment="DOCKER_OPTS=--bridge=none --iptables=false --ip-masq=false"
+    - name: ip-allocator.service
+      enable: true
+      contents: |
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/bin/docker run \
+          --net=host \
+          --volume=/etc/systemd/network:/target/units \
+          --volume=/run:/target/opts \
+          kubermesh/ip-allocator:latest 2001:db8::/71
+        ExecStart=/usr/bin/systemctl restart systemd-networkd
     - name: kubelet.path
       enable: true
       contents: |
