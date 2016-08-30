@@ -32,6 +32,10 @@ systemd:
     - name: kubelet.service
       enable: true
       contents: |
+        [Unit]
+        After=ip-allocator.service
+        Requires=ip-allocator.service
+
         [Service]
         EnvironmentFile=-/etc/environment
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
