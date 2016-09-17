@@ -40,6 +40,7 @@ systemd:
         EnvironmentFile=-/etc/environment
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
         Environment=KUBELET_VERSION=v1.3.0_coreos.1
+        Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
@@ -50,7 +51,7 @@ systemd:
           --exit-on-lock-contention \
           --config=/etc/kubernetes/manifests \
           --allow-privileged \
-          --hostname-override=%m \
+          --hostname-override=%H \
           --node-labels=master=true \
           --minimum-container-ttl-duration=3m0s \
           --cluster_dns=10.3.0.10 \
