@@ -71,6 +71,12 @@ storage:
         device: "/dev/disk/by-label/ROOT"
         format: "ext4"
   files:
+    - path: /etc/hostname
+      filesystem: rootfs
+      mode: 0644
+      contents:
+        inline: |
+          {{ .request.query.uuid }}
     - path: /etc/kubernetes/empty
       filesystem: rootfs
       mode: 0644
