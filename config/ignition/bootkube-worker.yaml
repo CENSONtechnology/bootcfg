@@ -18,7 +18,7 @@ systemd:
           --net=host \
           --volume=/etc/systemd/network:/target/units \
           --volume=/run:/target/opts \
-          kubermesh/ip-allocator:latest 2001:db8::/71
+          kubermesh/ip-allocator:latest %m
         ExecStart=/usr/bin/systemctl restart systemd-networkd
     - name: kubelet.path
       enable: true
