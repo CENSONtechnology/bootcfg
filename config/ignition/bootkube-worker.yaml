@@ -17,7 +17,7 @@ systemd:
         ExecStart=/usr/bin/docker run \
           --net=host \
           --volume=/etc/systemd/network:/target/units \
-          --volume=/run:/target/opts \
+          --volume=/etc/ip-allocator-opts:/target/opts \
           kubermesh/ip-allocator:latest %m
         ExecStart=/usr/bin/systemctl restart systemd-networkd
     - name: kubelet.path
@@ -38,6 +38,7 @@ systemd:
 
         [Service]
         EnvironmentFile=-/etc/environment
+        EnvironmentFile=/etc/ip-allocator-opts/ip-allocator-kubelet-opts.env
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
         Environment=KUBELET_VERSION=v1.3.0_coreos.1
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
@@ -52,6 +53,7 @@ systemd:
           --config=/etc/kubernetes/manifests \
           --allow-privileged \
           --hostname-override=%H \
+          --node-ip=${IPALLOC_HOST_IP} \
           --node-labels=master=true \
           --minimum-container-ttl-duration=3m0s \
           --cluster_dns=10.3.0.10 \
