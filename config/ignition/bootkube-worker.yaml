@@ -40,7 +40,7 @@ systemd:
         EnvironmentFile=-/etc/environment
         EnvironmentFile=/etc/ip-allocator-opts/ip-allocator-kubelet-opts.env
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
-        Environment=KUBELET_VERSION=v1.3.0_coreos.1
+        Environment=KUBELET_VERSION=v1.4.0_coreos.2
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
